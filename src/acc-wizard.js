@@ -59,8 +59,8 @@
 
         // Members
         var el = element,      // DOM version of element
-           $el = $(element),   // jQuery version of element
-           currentHash;        // track the window hash
+            $el = $(element),   // jQuery version of element
+            currentHash;        // track the window hash
 
         // Extend default options with those supplied by user.
         options = $.extend({}, $.fn[pluginName].defaults, options);
@@ -114,34 +114,34 @@
             // so callers can override if appropriate
             if (options.addButtons) {
                 var nextOnly = $( "<div/>", {
-                                    "class": options.stepClass
-                                }).append($("<button/>", {
-                                    "class": options.nextClasses,
-                                    "type":  options.nextType,
-                                    "text":  options.nextText
-                                }));
+                    "class": options.stepClass
+                }).append($("<button/>", {
+                        "class": options.nextClasses,
+                        "type":  options.nextType,
+                        "text":  options.nextText
+                    }));
                 var nextBack = $( "<div/>", {
-                                    "class": options.stepClass
-                                })
-                                .append($("<button/>", {
-                                    "class": options.backClasses,
-                                    "type":  options.backType,
-                                    "text":  options.backText
-                                }))
-                                .append(" ")
-                                .append($("<button/>", {
-                                    "class": options.nextClasses,
-                                    "type":  options.nextType,
-                                    "text":  options.nextText
-                                }));
+                    "class": options.stepClass
+                })
+                    .append($("<button/>", {
+                        "class": options.backClasses,
+                        "type":  options.backType,
+                        "text":  options.backText
+                    }))
+                    .append(" ")
+                    .append($("<button/>", {
+                        "class": options.nextClasses,
+                        "type":  options.nextType,
+                        "text":  options.nextText
+                    }));
                 var backOnly = $( "<div/>", {
-                                    "class": options.stepClass
-                                })
-                                .append($("<button/>", {
-                                    "class": options.backClasses,
-                                    "type":  options.backType,
-                                    "text":  options.backText
-                                }));
+                    "class": options.stepClass
+                })
+                    .append($("<button/>", {
+                        "class": options.backClasses,
+                        "type":  options.backType,
+                        "text":  options.backText
+                    }));
 
                 // Grab all the <form> elements in the accordion stack
                 // and count them.
@@ -177,12 +177,12 @@
             // of the steps are marked as complete, then use the first step.
 
             currentHash = window.location.hash ||
-                          $(options.sidebar,$el)
-                              .children("li."+options.todoClass+":first")
-                              .children("a").attr("href") ||
-                          $(options.sidebar,$el)
-                              .children("li:first")
-                              .children("a").attr("href");
+                $(options.sidebar,$el)
+                    .children("li."+options.todoClass+":first")
+                    .children("a").attr("href") ||
+                $(options.sidebar,$el)
+                    .children("li:first")
+                    .children("a").attr("href");
 
             // Sync up the window hash with our calculated value
             window.location.hash = currentHash;
@@ -252,14 +252,16 @@
                         ev.preventDefault();
                         var panel = $(this).parents(".panel-collapse")[0];
                         hook('beforeNext', panel);
-                        var next = "#" + $(".panel-collapse",
-                            $(panel).parents(".panel")
-                                .next(".panel")[0])[0].id;
-                        $(next).collapse("show");
-                        hook('onNext', panel);
-                        currentHash = next;
-                        makeTaskActive(currentHash);
-                        window.location.hash = currentHash;
+                        if(hook('onValidate', panel)){
+                            var next = "#" + $(".panel-collapse",
+                                $(panel).parents(".panel")
+                                    .next(".panel")[0])[0].id;
+                            $(next).collapse("show");
+                            hook('onNext', panel);
+                            currentHash = next;
+                            makeTaskActive(currentHash);
+                            window.location.hash = currentHash;
+                        }
                     });
 
                 // When the user clicks the "Back" button in
@@ -360,8 +362,8 @@
                 return this;
             }
 
-        // If the first parameter is an object (options), or was omitted,
-        // instantiate a new instance of the plugin.
+            // If the first parameter is an object (options), or was omitted,
+            // instantiate a new instance of the plugin.
         } else if (typeof options === "object" || !options) {
 
             return this.each(function() {
@@ -395,7 +397,8 @@
         onNext:         function() {},          // function to call on next step
         onBack:         function() {},          // function to call on back up
         onInit:         function() {},          // a chance to hook initialization
-        onDestroy:      function() {}           // a chance to hook destruction
+        onDestroy:      function() {},           // a chance to hook destruction
+        onValidate:     function() {return true;}, // validation hook
     };
 
 })( jQuery, window, document );
